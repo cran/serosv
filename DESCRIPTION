@@ -1,7 +1,7 @@
 Package: serosv
 Type: Package
 Title: Model Infectious Disease Parameters from Serosurveys
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Anh", "Phan Truong Quynh", email = "anhptq@oucru.org", role = c("aut", "cre")),
     person("Nguyen", "Pham Nguyen The", email = "nguyenpnt@oucru.org", role = c("aut")),
@@ -39,7 +39,7 @@ LinkingTo: BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0),
 SystemRequirements: GNU make
 BugReports: https://github.com/OUCRU-Modelling/serosv/issues
 NeedsCompilation: yes
-Packaged: 2024-10-04 13:11:36 UTC; anhptq
+Packaged: 2024-10-18 06:26:55 UTC; anhptq
 Author: Anh Phan Truong Quynh [aut, cre],
   Nguyen Pham Nguyen The [aut],
   Long Bui Thanh [aut],
@@ -48,4 +48,4 @@ Author: Anh Phan Truong Quynh [aut, cre],
   Marc Choisy [aut] (<https://orcid.org/0000-0002-5187-6390>)
 Maintainer: Anh Phan Truong Quynh <anhptq@oucru.org>
 Repository: CRAN
-Date/Publication: 2024-10-07 09:20:02 UTC
+Date/Publication: 2024-10-18 10:50:01 UTC
