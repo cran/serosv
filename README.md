@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# serosv
+# serosv <img src="logo.svg" align="right" width="120"/>
 
 <!-- badges: start -->
 
@@ -60,7 +60,23 @@ Nonparametric approaches:
 
 - Local estimation by polynomials
 
+Semiparametric approaches:
+
+- Penalized splines:
+
+  - Penalized likelihood framework
+
+  - Generalized Linear Mixed Model framework
+
+Hierarchical Bayesian approaches:
+
+- Hierarchical Farrington model
+
+- Hierarchical log-logistic model
+
 ## Demo
+
+### Fitting rubella data from the UK
 
 Load the rubella in UK dataset.
 
@@ -76,7 +92,7 @@ be (-0.9,-0.9).
 rubella <- rubella_uk_1986_1987
 
 best_2d_mn <- find_best_fp_powers(
-  rubella$age, rubella$pos, rubella$tot,
+  rubella,
   p=seq(-2,3,0.1), mc = T, degree=2, link="logit"
 )
 
@@ -92,10 +108,8 @@ best_2d_mn
 #> Call:  glm(formula = as.formula(formulate(p_cur)), family = binomial(link = link))
 #> 
 #> Coefficients:
-#>               (Intercept)                I(age^-0.9)  
-#>                     4.342                     -4.696  
-#> I(I(age^-0.9) * log(age))  
-#>                    -9.845  
+#>               (Intercept)                I(age^-0.9)  I(I(age^-0.9) * log(age))  
+#>                     4.342                     -4.696                     -9.845  
 #> 
 #> Degrees of Freedom: 43 Total (i.e. Null);  41 Residual
 #> Null Deviance:       1369 
@@ -106,10 +120,37 @@ Finally, fit the second degree fractional polynomial.
 
 ``` r
 fpmd <- fp_model(
-  rubella$age, rubella$pos, rubella$tot,
+  rubella,
   p=c(-0.9, -0.9), link="logit")
 
 plot(fpmd)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-48-1.png" width="100%" />
+
+### Fitting Parvo B19 data from Finland
+
+``` r
+parvob19 <- parvob19_fi_1997_1998
+
+# for linelisting data, either transform it to aggregated
+transform_data(
+  parvob19$age, 
+  parvob19$seropositive,
+  heterogeneity_col = "age") %>% 
+  polynomial_model(type = "Muench") %>% 
+  plot()
+```
+
+<img src="man/figures/README-unnamed-chunk-49-1.png" width="100%" />
+
+``` r
+
+# or fit data as is
+parvob19 %>% 
+  rename(status = seropositive) %>% 
+  polynomial_model(type = "Muench") %>% 
+  plot()
+```
+
+<img src="man/figures/README-unnamed-chunk-49-2.png" width="100%" />

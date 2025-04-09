@@ -352,6 +352,8 @@ aggregated data (data with <code>t</code>, <code>pos</code>,
 <li><p><code>t</code> the time vector</p></li>
 <li><p><code>spos</code> the seropositive vector (TRUE/FALSE or
 1/0)</p></li>
+<li><p><code>heterogeneity_col</code> new name for the time vector,
+default to <code>heterogeneity_col = &quot;t&quot;</code></p></li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>linelisting_data <span class="ot">&lt;-</span> hcv_be_2006</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>aggregated_data <span class="ot">&lt;-</span> <span class="fu">transform_data</span>(linelisting_data<span class="sc">$</span>dur, linelisting_data<span class="sc">$</span>seropositive)</span>

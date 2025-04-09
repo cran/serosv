@@ -1,15 +1,12 @@
 #' Penalized Spline model
 #'
-#' @param age the age vector
-#' @param pos the positive count vector (optional if status is provided).
-#' @param tot the total count vector (optional if status is provided).
-#' @param status the serostatus vector (optional if pos & tot are provided).
+#' @param data the input data frame, must either have `age`, `pos`, `tot` column for aggregated data OR `age`, `status` for linelisting data
 #' @param s smoothing basis to use
 #' @param sp smoothing parameter
 #' @param link link function to use
 #' @param framework which approach to fit the model ("pl" for penalized likelihood framework, "glmm" for generalized linear mixed model framework)
 #'
-#' @import mgcv
+#' @importFrom mgcv gam gamm
 #' @importFrom stats binomial
 #'
 #' @return a list of class penalized_spline_model with 6 attributes
@@ -26,24 +23,18 @@
 #'
 #' @examples
 #' data <- parvob19_be_2001_2003
-#' model <- penalized_spline_model(data$age, status = data$seropositive, framework="glmm")
+#' data$status <- data$seropositive
+#' model <- penalized_spline_model(data, framework="glmm")
 #' model$info$gam
 #' plot(model)
-penalized_spline_model <- function(age, pos=NULL,tot=NULL,status=NULL, s = "bs", link = "logit", framework = "pl", sp = NULL){
-  stopifnot("Values for either `pos & tot` or `status` must be provided" = !is.null(pos) & !is.null(tot) | !is.null(status) )
+penalized_spline_model <- function(data, s = "bs", link = "logit", framework = "pl", sp = NULL){
   model <- list()
-  age <- as.numeric(age)
 
-  # check input whether it is line-listing or aggregated data
-  if (!is.null(pos) & !is.null(tot)){
-    pos <- as.numeric(pos)
-    tot <- as.numeric(tot)
-    model$datatype <- "aggregated"
-  }else{
-    pos <- as.numeric(status)
-    tot <- rep(1, length(pos))
-    model$datatype <- "linelisting"
-  }
+  data <- check_input(data)
+  age <- data$age
+  pos <- data$pos
+  tot <- data$tot
+  model$datatype <- data$type
 
   # s <- mgcv:::s
   spos <- pos/tot

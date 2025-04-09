@@ -4,67 +4,57 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----setup, output=FALSE------------------------------------------------------
+## ----setup, output=FALSE, warning=FALSE, message=FALSE------------------------
 library(serosv)
+library(dplyr)
+library(magrittr)
 
 ## -----------------------------------------------------------------------------
-a <- hav_bg_1964
-neg <- a$tot -a$pos
-pos <- a$pos
-age <- a$age
-tot <- a$tot
+data <- hav_bg_1964
 
 ## -----------------------------------------------------------------------------
-muench1 <- polynomial_model(age, pos = pos, tot = tot, k = 1)
+muench1 <- polynomial_model(data, k = 1)
 summary(muench1$info)
 
-muench2 <- polynomial_model(age, pos = pos, tot = tot, type = "Muench")
+muench2 <- polynomial_model(data, type = "Muench")
 summary(muench2$info)
 
 ## -----------------------------------------------------------------------------
 plot(muench2) 
 
 ## -----------------------------------------------------------------------------
-gf_model <- polynomial_model(age, pos = pos, tot = tot, type = "Griffith")
+gf_model <- polynomial_model(data, type = "Griffith")
 plot(gf_model)
 
 ## -----------------------------------------------------------------------------
-grf_model <- polynomial_model(age, pos = pos, tot = tot, type = "Grenfell")
+grf_model <- polynomial_model(data, type = "Grenfell")
 plot(grf_model)
 
 ## ----warning=FALSE------------------------------------------------------------
-rubella <- rubella_uk_1986_1987
-rubella$neg <- rubella$tot - rubella$pos
-
 farrington_md <- farrington_model(
-   rubella$age, pos = rubella$pos, tot = rubella$tot,
+   rubella_uk_1986_1987,
    start=list(alpha=0.07,beta=0.1,gamma=0.03)
    )
 plot(farrington_md)
 
 ## -----------------------------------------------------------------------------
 hcv <- hcv_be_2006[order(hcv_be_2006$dur), ]
-dur <- hcv$dur
-infected <- hcv$seropositive
 
-wb_md <- weibull_model(
-   t = dur,
-   status = infected
-   )
+wb_md <- hcv %>% 
+  rename(
+    t = dur, status = seropositive
+  ) %>% weibull_model()
 plot(wb_md) 
 
 ## ----warning=FALSE------------------------------------------------------------
 hav <- hav_be_1993_1994
 best_p <- find_best_fp_powers(
-  hav$age, pos = hav$pos,tot = hav$tot,
+  hav,
   p=seq(-2,3,0.1), mc=FALSE, degree=2, link="cloglog"
 )
 best_p
 
 ## -----------------------------------------------------------------------------
-model <- fp_model(
-  hav$age, pos = hav$pos, tot = hav$tot,
-  p=c(1.5, 1.6), link="cloglog")
-compute_ci.fp_model(model)
+model <- fp_model(hav, p=c(1.5, 1.6), link="cloglog")
 plot(model)
 

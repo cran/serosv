@@ -1,0 +1,59 @@
+---
+title: "Model selection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Model selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, output=FALSE}
+library(serosv)
+library(dplyr)
+library(magrittr)
+```
+
+```{r, warning=FALSE}
+data <- parvob19_fi_1997_1998[order(parvob19_fi_1997_1998$age), ] %>% 
+  rename(status = seropositive)
+  
+aggregated <- transform_data(data$age, data$status, heterogeneity_col = "age")
+
+# fit with linelisting data
+model1 <- polynomial_model(data, type = "Muench")
+# fit with aggregated data
+model2 <- polynomial_model(aggregated, type = "Muench")
+# fit with aggregated data
+model3 <- polynomial_model(aggregated, type = "Griffith")
+# fit with gam
+model4 <- penalized_spline_model(aggregated)
+```
+
+## Generate models comparison `data.frame`
+
+Function `compare_models()` is used for quickly computing AIC and BIC values for given model(s).
+
+The function can take an arbitrary number of models and all models must be created from `serosv`'s set of `*_model()` functions. It will then return a `data.frame` of 4 columns:
+
+-   `model` model identifier. Either user defined name or index based on the order provided.
+
+-   `type` type of model (a `serosv` model class)
+
+-   `AIC` AIC value for the fitted model (if applicable)
+
+-   `BIC` AIC value for the fitted model (if applicable)
+
+**Sample usage**
+
+Compare 4 models defined above
+
+```{r}
+# provide models with name
+compare_models(muench_linelist = model1, muench_aggregated = model2, griffith = model3, penalized_spline = model4)
+
+# provide models without name
+compare_models(model1, model2, model3, model4)
+
+# user can provide arbitrary number of models
+compare_models(model3, model4)
+```
